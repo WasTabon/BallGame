@@ -1024,9 +1024,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forwardSpeed: 5
-  sidewaysSpeed: 7
-  leftBoundary: -3
-  rightBoundary: 6
+  sidewaysSpeed: 10
+  leftBoundary: -2
+  rightBoundary: 5
   swipeSensitivity: 5
   smoothSpeed: 8
   stopSpeed: 15
