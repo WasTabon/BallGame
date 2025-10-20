@@ -13,9 +13,8 @@ public class PlayerController : MonoBehaviour
     [Header("Swipe Settings")]
     public float swipeSensitivity = 0.01f;
     public float smoothSpeed = 10f;
-    public float stopSpeed = 15f; // Скорость остановки
+    public float stopSpeed = 15f;
     
-    private Rigidbody rb;
     private Animator animator;
     private bool isRunning = false;
     private float targetHorizontalVelocity = 0f;
@@ -25,7 +24,6 @@ public class PlayerController : MonoBehaviour
     
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         
         GameEntryPoint.OnPlayerStart += StartRunning;
@@ -43,15 +41,12 @@ public class PlayerController : MonoBehaviour
         
         HandleInput();
         
-        // Плавное сглаживание движения
         currentHorizontalVelocity = Mathf.Lerp(currentHorizontalVelocity, targetHorizontalVelocity, Time.deltaTime * smoothSpeed);
         
-        // Быстрая остановка когда нет ввода
         if (!isInputActive)
         {
             targetHorizontalVelocity = Mathf.Lerp(targetHorizontalVelocity, 0f, Time.deltaTime * stopSpeed);
             
-            // Полная остановка при очень малых значениях
             if (Mathf.Abs(targetHorizontalVelocity) < 0.01f)
             {
                 targetHorizontalVelocity = 0f;
@@ -61,11 +56,16 @@ public class PlayerController : MonoBehaviour
                 currentHorizontalVelocity = 0f;
             }
         }
+        
+        Vector3 movement = new Vector3(currentHorizontalVelocity * -sidewaysSpeed, 0, -forwardSpeed) * Time.deltaTime;
+        transform.position += movement;
+        
+        float clampedX = Mathf.Clamp(transform.position.x, leftBoundary, rightBoundary);
+        transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
     }
     
     void HandleInput()
     {
-        // PC input
         if (Input.GetMouseButtonDown(0))
         {
             isInputActive = true;
@@ -86,7 +86,6 @@ public class PlayerController : MonoBehaviour
             lastInputPosition = currentPosition;
         }
         
-        // Mobile input
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -106,17 +105,6 @@ public class PlayerController : MonoBehaviour
                 targetHorizontalVelocity = Mathf.Clamp(targetHorizontalVelocity, -1f, 1f);
             }
         }
-    }
-    
-    void FixedUpdate()
-    {
-        if (!isRunning) return;
-        
-        Vector3 movement = new Vector3(currentHorizontalVelocity * -sidewaysSpeed, 0, -forwardSpeed);
-        rb.velocity = movement;
-        
-        float clampedX = Mathf.Clamp(transform.position.x, leftBoundary, rightBoundary);
-        transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
     }
     
     void OnDrawGizmos()
