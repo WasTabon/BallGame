@@ -8,6 +8,7 @@ public class CrowdManager : MonoBehaviour
     public int maxCrowdSize = 20;
     public float crowdRadius = 3f;
     public float minDistanceBetweenMembers = 1.5f;
+    public float speedChangePerMember = 0.05f;
     
     [Header("References")]
     public Transform playerTransform;
@@ -28,6 +29,8 @@ public class CrowdManager : MonoBehaviour
     private Dictionary<Ball, Coroutine> ballRemovalCoroutines = new Dictionary<Ball, Coroutine>();
     private PlayerController mainPlayerController;
     private float memberColliderSize;
+    private float baseSpeedMultiplier = 1f;
+    private float zoneSpeedMultiplier = 1f;
     
     void Start()
     {
@@ -50,6 +53,7 @@ public class CrowdManager : MonoBehaviour
         }
         
         AddBallToPlayer(playerTransform.gameObject);
+        UpdateSpeed();
     }
     
     void Update()
@@ -76,6 +80,7 @@ public class CrowdManager : MonoBehaviour
         crowdMembers.Add(newMember);
         
         RedistributeBalls();
+        UpdateSpeed();
     }
     
     public void RemoveCrowdMember()
@@ -89,6 +94,49 @@ public class CrowdManager : MonoBehaviour
         
         crowdMembers.RemoveAt(randomIndex);
         Destroy(memberToRemove);
+        UpdateSpeed();
+    }
+    
+    public void RemoveSpecificCrowdMember(GameObject member)
+    {
+        if (crowdMembers.Contains(member))
+        {
+            RemoveAllBallsFromPlayer(member);
+            crowdMembers.Remove(member);
+            Destroy(member);
+            UpdateSpeed();
+        }
+    }
+    
+    void UpdateSpeed()
+    {
+        baseSpeedMultiplier = 1f + (crowdMembers.Count * speedChangePerMember);
+        ApplySpeed();
+    }
+    
+    void ApplySpeed()
+    {
+        if (mainPlayerController != null)
+        {
+            mainPlayerController.SetSpeedMultiplier(baseSpeedMultiplier * zoneSpeedMultiplier);
+        }
+    }
+    
+    public void SetZoneSpeedMultiplier(float multiplier)
+    {
+        zoneSpeedMultiplier = multiplier;
+        ApplySpeed();
+    }
+    
+    public void ResetZoneSpeedMultiplier()
+    {
+        zoneSpeedMultiplier = 1f;
+        ApplySpeed();
+    }
+    
+    public List<GameObject> GetCrowdMembers()
+    {
+        return new List<GameObject>(crowdMembers);
     }
     
     void RedistributeBalls()

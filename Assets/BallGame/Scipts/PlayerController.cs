@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private float currentHorizontalVelocity = 0f;
     private Vector2 lastInputPosition;
     private bool isInputActive = false;
+    private float speedMultiplier = 1f;
     
     void Start()
     {
@@ -33,6 +34,16 @@ public class PlayerController : MonoBehaviour
     {
         isRunning = true;
         animator.SetTrigger("Run");
+    }
+    
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        speedMultiplier = multiplier;
+    }
+    
+    public float GetSpeedMultiplier()
+    {
+        return speedMultiplier;
     }
     
     void Update()
@@ -57,7 +68,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        Vector3 movement = new Vector3(currentHorizontalVelocity * -sidewaysSpeed, 0, -forwardSpeed) * Time.deltaTime;
+        Vector3 movement = new Vector3(currentHorizontalVelocity * -sidewaysSpeed, 0, -forwardSpeed * speedMultiplier) * Time.deltaTime;
         transform.position += movement;
         
         float clampedX = Mathf.Clamp(transform.position.x, leftBoundary, rightBoundary);
