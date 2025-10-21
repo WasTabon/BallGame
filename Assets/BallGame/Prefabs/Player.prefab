@@ -2263,7 +2263,7 @@ MonoBehaviour:
   sidewaysSpeed: 10
   leftBoundary: -2
   rightBoundary: 5
-  swipeSensitivity: 5
+  swipeSensitivity: 1
   smoothSpeed: 8
   stopSpeed: 15
 --- !u!1 &3118098269009355509

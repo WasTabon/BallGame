@@ -25,6 +25,7 @@ public class CrowdManager : MonoBehaviour
     
     private List<GameObject> crowdMembers = new List<GameObject>();
     private List<Ball> allBalls = new List<Ball>();
+    private Dictionary<Ball, Coroutine> ballRemovalCoroutines = new Dictionary<Ball, Coroutine>();
     private PlayerController mainPlayerController;
     private float memberColliderSize;
     
@@ -117,6 +118,12 @@ public class CrowdManager : MonoBehaviour
             
             if (playerWithoutBall != null)
             {
+                if (ballRemovalCoroutines.ContainsKey(ball))
+                {
+                    StopCoroutine(ballRemovalCoroutines[ball]);
+                    ballRemovalCoroutines.Remove(ball);
+                }
+                
                 ball.owner = playerWithoutBall;
             }
         }
@@ -193,7 +200,8 @@ public class CrowdManager : MonoBehaviour
         int ballCount = GetBallCountForPlayer(player);
         if (ballCount > 1)
         {
-            StartCoroutine(RemoveBallAfterDelay(ball, 5f));
+            Coroutine removalCoroutine = StartCoroutine(RemoveBallAfterDelay(ball, 8f));
+            ballRemovalCoroutines[ball] = removalCoroutine;
         }
     }
     
@@ -203,9 +211,16 @@ public class CrowdManager : MonoBehaviour
         {
             if (allBalls[i] != null && allBalls[i].owner == player)
             {
-                GameObject ballToRemove = allBalls[i].gameObject;
+                Ball ballToRemove = allBalls[i];
+                
+                if (ballRemovalCoroutines.ContainsKey(ballToRemove))
+                {
+                    StopCoroutine(ballRemovalCoroutines[ballToRemove]);
+                    ballRemovalCoroutines.Remove(ballToRemove);
+                }
+                
                 allBalls.RemoveAt(i);
-                Destroy(ballToRemove);
+                Destroy(ballToRemove.gameObject);
                 return;
             }
         }
@@ -217,9 +232,16 @@ public class CrowdManager : MonoBehaviour
         {
             if (allBalls[i] != null && allBalls[i].owner == player)
             {
-                GameObject ballToRemove = allBalls[i].gameObject;
+                Ball ballToRemove = allBalls[i];
+                
+                if (ballRemovalCoroutines.ContainsKey(ballToRemove))
+                {
+                    StopCoroutine(ballRemovalCoroutines[ballToRemove]);
+                    ballRemovalCoroutines.Remove(ballToRemove);
+                }
+                
                 allBalls.RemoveAt(i);
-                Destroy(ballToRemove);
+                Destroy(ballToRemove.gameObject);
             }
         }
     }
@@ -232,6 +254,11 @@ public class CrowdManager : MonoBehaviour
         {
             StartCoroutine(ball.FlyAway());
             allBalls.Remove(ball);
+            
+            if (ballRemovalCoroutines.ContainsKey(ball))
+            {
+                ballRemovalCoroutines.Remove(ball);
+            }
         }
     }
     
