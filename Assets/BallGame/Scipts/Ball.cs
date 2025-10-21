@@ -64,7 +64,7 @@ public class Ball : MonoBehaviour
         kickTimer += Time.deltaTime * kickSpeed;
         float normalizedKick = (Mathf.Sin(kickTimer) + 1f) / 2f;
         
-        Vector3 closestPosition = owner.transform.position + owner.transform.forward * ballRadius + new Vector3(horizontalOffset, ballRadius, 0);
+        Vector3 closestPosition = owner.transform.position + owner.transform.forward * (ballRadius * 3f) + new Vector3(horizontalOffset, ballRadius, 0);
         
         Vector3 targetPosition = Vector3.Lerp(closestPosition, basePosition, normalizedKick);
         
