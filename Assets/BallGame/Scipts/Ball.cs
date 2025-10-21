@@ -7,12 +7,14 @@ public class Ball : MonoBehaviour
     [HideInInspector] public float kickSpeed = 2f;
     [HideInInspector] public float kickDistance = 0.3f;
     [HideInInspector] public CrowdManager manager;
+    [HideInInspector] public int ballIndex = 0;
+    [HideInInspector] public int totalBallsForOwner = 1;
     
     private float kickTimer = 0f;
-    private bool movingForward = true;
     private Vector3 basePosition;
     private Rigidbody rb;
     private float ballRadius;
+    private float baseDistance = 1.5f;
     
     void Start()
     {
@@ -30,7 +32,7 @@ public class Ball : MonoBehaviour
         }
         else
         {
-            ballRadius = 0.5f;
+            ballRadius = 0.428f;
         }
     }
     
@@ -42,8 +44,21 @@ public class Ball : MonoBehaviour
             return;
         }
         
-        basePosition = owner.transform.position + owner.transform.forward * 1.5f;
-        basePosition.x = owner.transform.position.x;
+        float horizontalOffset = 0f;
+        if (totalBallsForOwner > 1)
+        {
+            float spacing = ballRadius * 2.5f;
+            float totalWidth = (totalBallsForOwner - 1) * spacing;
+            horizontalOffset = -totalWidth / 2f + ballIndex * spacing;
+        }
+        
+        if (manager != null)
+        {
+            baseDistance = manager.ballDistance;
+        }
+        
+        basePosition = owner.transform.position + owner.transform.forward * baseDistance;
+        basePosition.x = owner.transform.position.x + horizontalOffset;
         basePosition.y = owner.transform.position.y + ballRadius;
         
         kickTimer += Time.deltaTime * kickSpeed;
@@ -51,7 +66,7 @@ public class Ball : MonoBehaviour
         float kickOffset = Mathf.Sin(kickTimer) * kickDistance;
         Vector3 targetPosition = basePosition + Vector3.back * kickOffset;
         
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 10f);
+        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 5f);
         
         float rotationSpeed = 200f;
         transform.Rotate(-rotationSpeed * Time.deltaTime, 0, 0);
@@ -59,10 +74,10 @@ public class Ball : MonoBehaviour
     
     public IEnumerator FlyAway()
     {
-        float randomDirection = Random.Range(-1f, 1f);
-        Vector3 flyDirection = new Vector3(randomDirection, 0.2f, 0.5f).normalized;
-        float flySpeed = 3f;
-        float flyDuration = 1.5f;
+        float randomDirection = Random.Range(0, 2) == 0 ? -1f : 1f;
+        Vector3 flyDirection = new Vector3(randomDirection * 0.8f, 0.1f, 0.3f).normalized;
+        float flySpeed = 5f;
+        float flyDuration = 2f;
         float elapsed = 0f;
         
         while (elapsed < flyDuration)

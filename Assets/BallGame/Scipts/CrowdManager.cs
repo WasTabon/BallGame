@@ -55,6 +55,7 @@ public class CrowdManager : MonoBehaviour
     {
         UpdateCrowdPositions();
         UpdateBalls();
+        UpdateBallIndices();
     }
     
     public void AddCrowdMember()
@@ -73,10 +74,7 @@ public class CrowdManager : MonoBehaviour
         
         crowdMembers.Add(newMember);
         
-        if (GetTotalBallCount() > GetTotalPlayerCount())
-        {
-            AddBallToPlayer(newMember);
-        }
+        RedistributeBalls();
     }
     
     public void RemoveCrowdMember()
@@ -90,6 +88,38 @@ public class CrowdManager : MonoBehaviour
         
         crowdMembers.RemoveAt(randomIndex);
         Destroy(memberToRemove);
+    }
+    
+    void RedistributeBalls()
+    {
+        List<GameObject> allPlayers = GetAllPlayers();
+        List<Ball> ballsToRedistribute = new List<Ball>();
+        
+        foreach (var ball in allBalls)
+        {
+            if (ball != null && GetBallCountForPlayer(ball.owner) > 1)
+            {
+                ballsToRedistribute.Add(ball);
+            }
+        }
+        
+        foreach (var ball in ballsToRedistribute)
+        {
+            GameObject playerWithoutBall = null;
+            foreach (var player in allPlayers)
+            {
+                if (GetBallCountForPlayer(player) == 0)
+                {
+                    playerWithoutBall = player;
+                    break;
+                }
+            }
+            
+            if (playerWithoutBall != null)
+            {
+                ball.owner = playerWithoutBall;
+            }
+        }
     }
     
     public void AddBall()
@@ -202,6 +232,33 @@ public class CrowdManager : MonoBehaviour
         {
             StartCoroutine(ball.FlyAway());
             allBalls.Remove(ball);
+        }
+    }
+    
+    void UpdateBallIndices()
+    {
+        Dictionary<GameObject, List<Ball>> ballsByOwner = new Dictionary<GameObject, List<Ball>>();
+        
+        foreach (var ball in allBalls)
+        {
+            if (ball != null && ball.owner != null)
+            {
+                if (!ballsByOwner.ContainsKey(ball.owner))
+                {
+                    ballsByOwner[ball.owner] = new List<Ball>();
+                }
+                ballsByOwner[ball.owner].Add(ball);
+            }
+        }
+        
+        foreach (var kvp in ballsByOwner)
+        {
+            int totalBalls = kvp.Value.Count;
+            for (int i = 0; i < kvp.Value.Count; i++)
+            {
+                kvp.Value[i].ballIndex = i;
+                kvp.Value[i].totalBallsForOwner = totalBalls;
+            }
         }
     }
     
