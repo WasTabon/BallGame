@@ -12,12 +12,19 @@ public class CrowdManager : MonoBehaviour
     [Header("References")]
     public Transform playerTransform;
     public GameObject playerPrefab;
+    public GameObject ballPrefab;
     
     [Header("Boundaries")]
     public float leftBoundary = -3f;
     public float rightBoundary = 3f;
     
+    [Header("Ball Settings")]
+    public float ballDistance = 1.5f;
+    public float kickSpeed = 2f;
+    public float kickDistance = 0.3f;
+    
     private List<GameObject> crowdMembers = new List<GameObject>();
+    private List<Ball> allBalls = new List<Ball>();
     private PlayerController mainPlayerController;
     private float memberColliderSize;
     
@@ -40,11 +47,14 @@ public class CrowdManager : MonoBehaviour
             leftBoundary = mainPlayerController.leftBoundary;
             rightBoundary = mainPlayerController.rightBoundary;
         }
+        
+        AddBallToPlayer(playerTransform.gameObject);
     }
     
     void Update()
     {
         UpdateCrowdPositions();
+        UpdateBalls();
     }
     
     public void AddCrowdMember()
@@ -62,6 +72,11 @@ public class CrowdManager : MonoBehaviour
         }
         
         crowdMembers.Add(newMember);
+        
+        if (GetTotalBallCount() > GetTotalPlayerCount())
+        {
+            AddBallToPlayer(newMember);
+        }
     }
     
     public void RemoveCrowdMember()
@@ -70,8 +85,165 @@ public class CrowdManager : MonoBehaviour
         
         int randomIndex = Random.Range(0, crowdMembers.Count);
         GameObject memberToRemove = crowdMembers[randomIndex];
+        
+        RemoveAllBallsFromPlayer(memberToRemove);
+        
         crowdMembers.RemoveAt(randomIndex);
         Destroy(memberToRemove);
+    }
+    
+    public void AddBall()
+    {
+        List<GameObject> allPlayers = GetAllPlayers();
+        if (allPlayers.Count == 0) return;
+        
+        Dictionary<GameObject, int> ballCounts = new Dictionary<GameObject, int>();
+        foreach (var player in allPlayers)
+        {
+            ballCounts[player] = GetBallCountForPlayer(player);
+        }
+        
+        GameObject targetPlayer = null;
+        int minBalls = int.MaxValue;
+        
+        foreach (var kvp in ballCounts)
+        {
+            if (kvp.Value < minBalls)
+            {
+                minBalls = kvp.Value;
+                targetPlayer = kvp.Key;
+            }
+        }
+        
+        if (targetPlayer != null)
+        {
+            AddBallToPlayer(targetPlayer);
+        }
+    }
+    
+    public void RemoveBall()
+    {
+        if (allBalls.Count == 0) return;
+        
+        List<GameObject> playersWithBalls = new List<GameObject>();
+        foreach (var ball in allBalls)
+        {
+            if (ball != null && ball.owner != null && !playersWithBalls.Contains(ball.owner))
+            {
+                playersWithBalls.Add(ball.owner);
+            }
+        }
+        
+        if (playersWithBalls.Count == 0) return;
+        
+        GameObject randomPlayer = playersWithBalls[Random.Range(0, playersWithBalls.Count)];
+        RemoveBallFromPlayer(randomPlayer);
+    }
+    
+    void AddBallToPlayer(GameObject player)
+    {
+        if (ballPrefab == null) return;
+        
+        Vector3 spawnPos = player.transform.position + player.transform.forward * ballDistance;
+        GameObject ballObj = Instantiate(ballPrefab, spawnPos, Quaternion.identity);
+        
+        Ball ball = ballObj.GetComponent<Ball>();
+        if (ball == null)
+        {
+            ball = ballObj.AddComponent<Ball>();
+        }
+        
+        ball.owner = player;
+        ball.kickSpeed = kickSpeed;
+        ball.kickDistance = kickDistance;
+        ball.manager = this;
+        
+        allBalls.Add(ball);
+        
+        int ballCount = GetBallCountForPlayer(player);
+        if (ballCount > 1)
+        {
+            StartCoroutine(RemoveBallAfterDelay(ball, 5f));
+        }
+    }
+    
+    void RemoveBallFromPlayer(GameObject player)
+    {
+        for (int i = allBalls.Count - 1; i >= 0; i--)
+        {
+            if (allBalls[i] != null && allBalls[i].owner == player)
+            {
+                GameObject ballToRemove = allBalls[i].gameObject;
+                allBalls.RemoveAt(i);
+                Destroy(ballToRemove);
+                return;
+            }
+        }
+    }
+    
+    void RemoveAllBallsFromPlayer(GameObject player)
+    {
+        for (int i = allBalls.Count - 1; i >= 0; i--)
+        {
+            if (allBalls[i] != null && allBalls[i].owner == player)
+            {
+                GameObject ballToRemove = allBalls[i].gameObject;
+                allBalls.RemoveAt(i);
+                Destroy(ballToRemove);
+            }
+        }
+    }
+    
+    IEnumerator RemoveBallAfterDelay(Ball ball, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        if (ball != null && allBalls.Contains(ball))
+        {
+            StartCoroutine(ball.FlyAway());
+            allBalls.Remove(ball);
+        }
+    }
+    
+    int GetBallCountForPlayer(GameObject player)
+    {
+        int count = 0;
+        foreach (var ball in allBalls)
+        {
+            if (ball != null && ball.owner == player)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    int GetTotalBallCount()
+    {
+        return allBalls.Count;
+    }
+    
+    int GetTotalPlayerCount()
+    {
+        return crowdMembers.Count + 1;
+    }
+    
+    List<GameObject> GetAllPlayers()
+    {
+        List<GameObject> players = new List<GameObject> { playerTransform.gameObject };
+        players.AddRange(crowdMembers);
+        return players;
+    }
+    
+    void UpdateBalls()
+    {
+        for (int i = allBalls.Count - 1; i >= 0; i--)
+        {
+            if (allBalls[i] == null)
+            {
+                allBalls.RemoveAt(i);
+            }
+        }
     }
     
     Vector3 GetRandomPositionInCrowd()
