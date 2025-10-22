@@ -297,12 +297,12 @@ public class CrowdManager : MonoBehaviour
     IEnumerator RemoveBallAfterDelay(Ball ball, float delay)
     {
         yield return new WaitForSeconds(delay);
-        
-        if (ball != null && allBalls.Contains(ball))
+    
+        if (ball != null && allBalls.Contains(ball) && GetBallCountForPlayer(ball.owner) > 1)
         {
             StartCoroutine(ball.FlyAway());
             allBalls.Remove(ball);
-            
+        
             if (ballRemovalCoroutines.ContainsKey(ball))
             {
                 ballRemovalCoroutines.Remove(ball);
