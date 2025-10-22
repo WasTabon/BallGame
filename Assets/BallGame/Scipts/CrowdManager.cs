@@ -15,6 +15,9 @@ public class CrowdManager : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject ballPrefab;
     
+    [Header("Effects")]
+    public GameObject playerDestroyEffectPrefab;
+    
     [Header("Boundaries")]
     public float leftBoundary = -3f;
     public float rightBoundary = 3f;
@@ -77,10 +80,34 @@ public class CrowdManager : MonoBehaviour
             Destroy(controller);
         }
         
+        StartCoroutine(SpawnMemberAnimation(newMember));
+        
         crowdMembers.Add(newMember);
         
         RedistributeBalls();
         UpdateSpeed();
+    }
+    
+    IEnumerator SpawnMemberAnimation(GameObject member)
+    {
+        Vector3 targetScale = member.transform.localScale;
+        member.transform.localScale = Vector3.zero;
+        
+        float duration = 0.3f;
+        float elapsed = 0f;
+        
+        while (elapsed < duration && member != null)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            member.transform.localScale = Vector3.Lerp(Vector3.zero, targetScale, t);
+            yield return null;
+        }
+        
+        if (member != null)
+        {
+            member.transform.localScale = targetScale;
+        }
     }
     
     public void RemoveCrowdMember()
@@ -91,6 +118,7 @@ public class CrowdManager : MonoBehaviour
         GameObject memberToRemove = crowdMembers[randomIndex];
         
         RemoveAllBallsFromPlayer(memberToRemove);
+        SpawnPlayerDestroyEffect(memberToRemove.transform.position);
         
         crowdMembers.RemoveAt(randomIndex);
         Destroy(memberToRemove);
@@ -102,9 +130,19 @@ public class CrowdManager : MonoBehaviour
         if (crowdMembers.Contains(member))
         {
             RemoveAllBallsFromPlayer(member);
+            SpawnPlayerDestroyEffect(member.transform.position);
             crowdMembers.Remove(member);
             Destroy(member);
             UpdateSpeed();
+        }
+    }
+    
+    void SpawnPlayerDestroyEffect(Vector3 position)
+    {
+        if (playerDestroyEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(playerDestroyEffectPrefab, position, Quaternion.identity);
+            Destroy(effect, 2f);
         }
     }
     

@@ -9,12 +9,17 @@ public class Ball : MonoBehaviour
     [HideInInspector] public CrowdManager manager;
     [HideInInspector] public int ballIndex = 0;
     [HideInInspector] public int totalBallsForOwner = 1;
+    [HideInInspector] public bool isBlownAway = false;
+    
+    [Header("Effects")]
+    public GameObject destroyEffectPrefab;
     
     private float kickTimer = 0f;
     private Vector3 basePosition;
     private Rigidbody rb;
     private float ballRadius;
     private float baseDistance = 1.5f;
+    private Vector3 targetScale;
     
     void Start()
     {
@@ -34,10 +39,32 @@ public class Ball : MonoBehaviour
         {
             ballRadius = 0.428f;
         }
+        
+        targetScale = transform.localScale;
+        transform.localScale = Vector3.zero;
+        StartCoroutine(SpawnAnimation());
+    }
+    
+    IEnumerator SpawnAnimation()
+    {
+        float duration = 0.3f;
+        float elapsed = 0f;
+        
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            transform.localScale = Vector3.Lerp(Vector3.zero, targetScale, t);
+            yield return null;
+        }
+        
+        transform.localScale = targetScale;
     }
     
     void Update()
     {
+        if (isBlownAway) return;
+        
         if (owner == null)
         {
             Destroy(gameObject);
@@ -78,6 +105,8 @@ public class Ball : MonoBehaviour
     
     public IEnumerator FlyAway()
     {
+        isBlownAway = true;
+        
         float randomDirection = Random.Range(0, 2) == 0 ? -1f : 1f;
         Vector3 flyDirection = new Vector3(randomDirection * 0.8f, 0.1f, 0.3f).normalized;
         float flySpeed = 5f;
@@ -92,6 +121,24 @@ public class Ball : MonoBehaviour
             yield return null;
         }
         
+        SpawnDestroyEffect();
         Destroy(gameObject);
+    }
+    
+    void OnDestroy()
+    {
+        if (!isBlownAway)
+        {
+            SpawnDestroyEffect();
+        }
+    }
+    
+    void SpawnDestroyEffect()
+    {
+        if (destroyEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(destroyEffectPrefab, transform.position, Quaternion.identity);
+            Destroy(effect, 2f);
+        }
     }
 }

@@ -234,6 +234,7 @@ MonoBehaviour:
   playerTransform: {fileID: 620436534}
   playerPrefab: {fileID: 620436529}
   ballPrefab: {fileID: 6425838524113071044, guid: c4e12bc42ed87c244b778ea247aebf29, type: 3}
+  playerDestroyEffectPrefab: {fileID: 0}
   leftBoundary: -3
   rightBoundary: 3
   ballDistance: 5
