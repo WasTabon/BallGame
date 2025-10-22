@@ -1110,8 +1110,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 30941641339910144}
-  - component: {fileID: 803397679674909371}
   - component: {fileID: 803397679674909372}
+  - component: {fileID: 803397679674909373}
   m_Layer: 0
   m_Name: Trap A
   m_TagString: Untagged
@@ -1119,20 +1119,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &803397679674909371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 803397679674909370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff87a7b89ba88df4bb6d74f6825fc2ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationSpeed: 50
-  canKillMainPlayer: 1
 --- !u!65 &803397679674909372
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1154,6 +1140,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &803397679674909373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 803397679674909370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 489b326a12a42874497dac35f8465a57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closeDuration: 0.15
 --- !u!64 &848217188709336758
 MeshCollider:
   m_ObjectHideFlags: 0
