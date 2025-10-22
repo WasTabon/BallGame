@@ -23,6 +23,22 @@ public class CoinCollectable : MonoBehaviour
         {
             isCollected = true;
             CollectCoin();
+            return;
+        }
+        
+        CrowdManager crowdManager = FindObjectOfType<CrowdManager>();
+        if (crowdManager != null)
+        {
+            var crowdMembers = crowdManager.GetCrowdMembers();
+            foreach (var member in crowdMembers)
+            {
+                if (member == other.gameObject)
+                {
+                    isCollected = true;
+                    CollectCoin();
+                    break;
+                }
+            }
         }
     }
     
