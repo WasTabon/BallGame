@@ -6,11 +6,13 @@ public class FinishLine : MonoBehaviour
     public int requiredBalls = 10;
     
     private CrowdManager crowdManager;
+    private PlayerController _playerController;
     private bool hasFinished = false;
     
     void Start()
     {
         crowdManager = FindObjectOfType<CrowdManager>();
+        _playerController = FindObjectOfType<PlayerController>();
     }
     
     void OnTriggerEnter(Collider other)
@@ -37,6 +39,8 @@ public class FinishLine : MonoBehaviour
         if (crowdManager == null) return;
         
         int totalBalls = crowdManager.GetTotalBallCount();
+
+        _playerController.forwardSpeed = 0;
         
         if (totalBalls >= requiredBalls)
         {
