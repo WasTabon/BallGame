@@ -390,7 +390,7 @@ public class CrowdManager : MonoBehaviour
         return count;
     }
     
-    int GetTotalBallCount()
+    public int GetTotalBallCount()
     {
         return allBalls.Count;
     }
