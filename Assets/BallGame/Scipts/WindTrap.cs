@@ -7,8 +7,10 @@ public class WindTrap : MonoBehaviour
     [Header("Wind Settings")]
     public float windWidth = 5f;
     public float windHeight = 2f;
-    public float onDuration = 1.5f;
-    public float offDuration = 3f;
+    public float minOnDuration = 1f;
+    public float maxOnDuration = 3f;
+    public float minOffDuration = 1f;
+    public float maxOffDuration = 3f;
     
     [Header("Visual Settings")]
     public int lineCount = 5;
@@ -79,9 +81,12 @@ public class WindTrap : MonoBehaviour
     {
         while (true)
         {
+            float offDuration = Random.Range(minOffDuration, maxOffDuration);
             yield return new WaitForSeconds(offDuration);
             
             ActivateWind();
+            
+            float onDuration = Random.Range(minOnDuration, maxOnDuration);
             yield return new WaitForSeconds(onDuration);
             
             DeactivateWind();
@@ -153,23 +158,18 @@ public class WindTrap : MonoBehaviour
             yield break;
         }
         
+        ball.isBlownAway = true;
         ball.owner = null;
         
         Rigidbody rb = ball.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.isKinematic = false;
+            rb.useGravity = true;
             rb.AddForce(Vector3.left * ballForce + Vector3.up * (ballForce * 0.3f), ForceMode.Impulse);
         }
         
-        float duration = 2f;
-        float elapsed = 0f;
-        
-        while (elapsed < duration && ball != null)
-        {
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
+        yield return new WaitForSeconds(2f);
         
         if (ball != null && ball.gameObject != null)
         {

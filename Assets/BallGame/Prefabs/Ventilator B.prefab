@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 473153138373454725}
-  - component: {fileID: 4766197497305679393}
   - component: {fileID: 7918354368645529174}
+  - component: {fileID: 4766197497305679393}
   m_Layer: 0
   m_Name: Ventilator B
   m_TagString: Untagged
@@ -38,27 +38,6 @@ Transform:
   - {fileID: 5500669086826276358}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4766197497305679393
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 998438924146454847}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 056343f9a89f5bb4fa21617f67b32d2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  windWidth: 9.84
-  windHeight: 2
-  onDuration: 1.5
-  offDuration: 3
-  lineCount: 5
-  waveSpeed: 2
-  waveAmplitude: 0.3
-  windColor: {r: 0, g: 1, b: 1, a: 1}
-  ballForce: 10
 --- !u!65 &7918354368645529174
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -80,6 +59,29 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 6.56, z: 16.07}
   m_Center: {x: 0, y: 1, z: -2.29}
+--- !u!114 &4766197497305679393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998438924146454847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 056343f9a89f5bb4fa21617f67b32d2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windWidth: 9.84
+  windHeight: 2
+  minOnDuration: 1
+  maxOnDuration: 1.5
+  minOffDuration: 1
+  maxOffDuration: 3
+  lineCount: 5
+  waveSpeed: 2
+  waveAmplitude: 0.3
+  windColor: {r: 0, g: 1, b: 1, a: 1}
+  ballForce: 10
 --- !u!1 &2301290933587268473
 GameObject:
   m_ObjectHideFlags: 0
