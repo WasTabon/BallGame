@@ -57,6 +57,8 @@ public class CrowdManager : MonoBehaviour
         
         AddBallToPlayer(playerTransform.gameObject);
         UpdateSpeed();
+        
+        // зробити анімації партікли, рівні і ui
     }
     
     void Update()

@@ -123,6 +123,10 @@ MonoBehaviour:
   kickSpeed: 2
   kickDistance: 0.3
   manager: {fileID: 0}
+  ballIndex: 0
+  totalBallsForOwner: 1
+  isBlownAway: 0
+  destroyEffectPrefab: {fileID: 1518883088362504, guid: 2a2eb40ae9f1b1b4caf51d97f6c8fb10, type: 3}
 --- !u!54 &7410934480888717408
 Rigidbody:
   m_ObjectHideFlags: 0
