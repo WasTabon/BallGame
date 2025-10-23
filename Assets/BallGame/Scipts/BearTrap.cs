@@ -43,6 +43,15 @@ public class BearTrap : MonoBehaviour
                 isMainPlayer = (other.gameObject == crowdManager.playerTransform.gameObject);
             }
             
+            if (isMainPlayer)
+            {
+                Debug.Log("Main Player hit by Moving Trap - Game Over!");
+            }
+            else if (crowdManager != null)
+            {
+                crowdManager.RemoveSpecificCrowdMember(other.gameObject);
+            }
+            
             StartCoroutine(CloseTrap(other.gameObject, isMainPlayer));
         }
     }
@@ -98,7 +107,7 @@ public class BearTrap : MonoBehaviour
                 {
                     // Можно добавить логику Game Over здесь
                 }
-                else
+                else if (victim != null && victim.activeSelf)
                 {
                     crowdManager.RemoveSpecificCrowdMember(victim);
                 }
