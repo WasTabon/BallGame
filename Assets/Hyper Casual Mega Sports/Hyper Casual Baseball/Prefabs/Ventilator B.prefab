@@ -52,8 +52,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   windWidth: 9.84
   windHeight: 2
-  onDuration: 3
-  offDuration: 0
+  onDuration: 1.5
+  offDuration: 3
   lineCount: 5
   waveSpeed: 2
   waveAmplitude: 0.3
