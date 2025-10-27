@@ -19,6 +19,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _coinsText2;
     [SerializeField] private TextMeshProUGUI _ballsText2;
 
+    private bool isPanel;
+
     private float _oldSpeed;
 
     private void Awake()
@@ -35,6 +37,9 @@ public class UIController : MonoBehaviour
     [ContextMenu("Loose")]
     public void HandleLoose()
     {
+        if (!isPanel) return;
+        isPanel = true;
+        
         _playerController.forwardSpeed = 0;
         _coinsText1.text = $"{WalletController.Instance.Coins}";
         _ballsText1.text = $"{_crowdManager.GetTotalBallCount()}";
@@ -46,6 +51,9 @@ public class UIController : MonoBehaviour
     [ContextMenu("Win")]
     public void HandleWin()
     {
+        if (!isPanel) return;
+        isPanel = true;
+        
         _playerController.forwardSpeed = 0;
         _coinsText1.text = $"{WalletController.Instance.Coins}";
         _ballsText1.text = $"{_crowdManager.GetTotalBallCount()}";
