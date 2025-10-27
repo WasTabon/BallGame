@@ -1124,7 +1124,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 723809113}
         m_TargetAssemblyTypeName: UIController, Assembly-CSharp
-        m_MethodName: HandleMenuButton
+        m_MethodName: HandleLevelsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3900,7 +3900,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 723809113}
         m_TargetAssemblyTypeName: UIController, Assembly-CSharp
-        m_MethodName: HandleMenuButton
+        m_MethodName: HandleLevelsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
