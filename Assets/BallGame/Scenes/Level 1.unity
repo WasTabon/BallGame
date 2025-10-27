@@ -4280,7 +4280,7 @@ MonoBehaviour:
   _soundButtonIconOff: {fileID: 0}
   _audioSourceMusic: {fileID: 1116472697}
   _audioSourceSound: {fileID: 1124719305}
-  _uiClickSound: {fileID: 0}
+  _uiClickSound: {fileID: 8300000, guid: bb6c873fbb4ed4941a87581d2ed81bfc, type: 3}
 --- !u!1 &1124719303
 GameObject:
   m_ObjectHideFlags: 0
