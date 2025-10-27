@@ -1,10 +1,14 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
+    public static UIController Instance;
+
+    [SerializeField] private RectTransform _winPanel;
+    [SerializeField] private RectTransform _loosePanel;
+    
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private CrowdManager _crowdManager;
     [SerializeField] private TextMeshProUGUI _coinsText;
@@ -12,12 +16,22 @@ public class UIController : MonoBehaviour
 
     private float _oldSpeed;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Update()
     {
         _coinsText.text = $"{WalletController.Instance.Coins}";
         _ballsText.text = $"{_crowdManager.GetTotalBallCount()}";
     }
 
+    public void HandleLoose()
+    {
+        _playerController.forwardSpeed = 0;
+    }
+    
     public void HandleLevelsButton()
     {
         SceneManager.LoadScene("Levels");
