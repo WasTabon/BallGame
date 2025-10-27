@@ -10,5 +10,17 @@ EditorBuildSettings:
     guid: e5336635a353eb8438e8d2ca8bb0e37b
   - enabled: 1
     path: Assets/BallGame/Scenes/Level 1.unity
+    guid: 1d6026a00c1149546a7ae92331b5c6e1
+  - enabled: 1
+    path: Assets/BallGame/Scenes/Level 2.unity
+    guid: cbf081ac3f10a4446a7550db77bb12c5
+  - enabled: 1
+    path: Assets/BallGame/Scenes/Level 3.unity
+    guid: 20ce4d32f6f6dbd46ada64f5368986ac
+  - enabled: 1
+    path: Assets/BallGame/Scenes/Level 4.unity
+    guid: a0edf691458e87745b3a26e02e214c1d
+  - enabled: 1
+    path: Assets/BallGame/Scenes/Level 5.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
