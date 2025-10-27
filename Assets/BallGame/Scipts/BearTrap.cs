@@ -40,12 +40,13 @@ public class BearTrap : MonoBehaviour
             bool isMainPlayer = false;
             if (crowdManager != null)
             {
-                isMainPlayer = (other.gameObject == crowdManager.playerTransform.gameObject);
+                isMainPlayer = (other.gameObject.TryGetComponent(out PlayerController _));
             }
             
             if (isMainPlayer)
             {
                 Debug.Log("Main Player hit by Moving Trap - Game Over!");
+                UIController.Instance.HandleLoose();
             }
             else if (crowdManager != null)
             {
@@ -99,6 +100,7 @@ public class BearTrap : MonoBehaviour
             if (isMainPlayer)
             {
                 Debug.Log("Main Player caught in Bear Trap - Game Over!");
+                UIController.Instance.HandleLoose();
             }
             
             if (crowdManager != null)

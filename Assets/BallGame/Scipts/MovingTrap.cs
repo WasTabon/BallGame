@@ -39,12 +39,13 @@ public class MovingTrap : MonoBehaviour
             bool isMainPlayer = false;
             if (crowdManager != null)
             {
-                isMainPlayer = (other.transform.gameObject == crowdManager.playerTransform.gameObject);
+                isMainPlayer = (other.gameObject.TryGetComponent(out PlayerController _));
             }
             
             if (isMainPlayer)
             {
                 Debug.Log("Main Player hit by Moving Trap - Game Over!");
+                UIController.Instance.HandleLoose();
             }
             else if (crowdManager != null)
             {

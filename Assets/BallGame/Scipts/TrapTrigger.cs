@@ -31,6 +31,7 @@ public class TrapTrigger : MonoBehaviour
                 // Здесь можно добавить логику смерти главного игрока
                 // Например, показать экран Game Over
                 Debug.Log("Main Player Hit Trap - Game Over!");
+                UIController.Instance.HandleLoose();
                 // Можно добавить: SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }

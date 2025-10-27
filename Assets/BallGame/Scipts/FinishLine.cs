@@ -45,10 +45,12 @@ public class FinishLine : MonoBehaviour
         if (totalBalls >= requiredBalls)
         {
             Debug.Log($"VICTORY! You finished with {totalBalls} balls (Required: {requiredBalls})");
+            UIController.Instance.HandleWin();
         }
         else
         {
             Debug.Log($"DEFEAT! You finished with {totalBalls} balls (Required: {requiredBalls})");
+            UIController.Instance.HandleLoose();
         }
     }
     

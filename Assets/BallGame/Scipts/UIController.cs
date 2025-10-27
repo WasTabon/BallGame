@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class UIController : MonoBehaviour
 {
@@ -27,9 +28,68 @@ public class UIController : MonoBehaviour
         _ballsText.text = $"{_crowdManager.GetTotalBallCount()}";
     }
 
+    [ContextMenu("Loose")]
     public void HandleLoose()
     {
         _playerController.forwardSpeed = 0;
+        ShowPanel(_loosePanel);
+    }
+
+    [ContextMenu("Win")]
+    public void HandleWin()
+    {
+        _playerController.forwardSpeed = 0;
+        ShowPanel(_winPanel);
+    }
+
+    private void ShowPanel(RectTransform panel)
+    {
+        panel.gameObject.SetActive(true);
+        
+        CanvasGroup bgCanvasGroup = panel.GetComponent<CanvasGroup>();
+        if (bgCanvasGroup == null)
+            bgCanvasGroup = panel.gameObject.AddComponent<CanvasGroup>();
+        
+        bgCanvasGroup.alpha = 0;
+        bgCanvasGroup.DOFade(1f, 0.3f);
+        
+        if (panel.childCount > 0)
+        {
+            RectTransform mainPanel = panel.GetChild(0) as RectTransform;
+            
+            CanvasGroup mainPanelCanvasGroup = mainPanel.GetComponent<CanvasGroup>();
+            if (mainPanelCanvasGroup == null)
+                mainPanelCanvasGroup = mainPanel.gameObject.AddComponent<CanvasGroup>();
+            
+            mainPanelCanvasGroup.alpha = 0;
+            mainPanel.localScale = Vector3.zero;
+            
+            Sequence mainPanelSequence = DOTween.Sequence();
+            mainPanelSequence.Append(mainPanel.DOScale(1.2f, 0.4f).SetEase(Ease.OutBack).SetDelay(0.2f));
+            mainPanelSequence.Join(mainPanelCanvasGroup.DOFade(1f, 0.3f));
+            mainPanelSequence.Append(mainPanel.DOScale(1f, 0.15f).SetEase(Ease.InOutSine));
+            
+            for (int i = 0; i < mainPanel.childCount; i++)
+            {
+                RectTransform child = mainPanel.GetChild(i) as RectTransform;
+                
+                CanvasGroup childCanvasGroup = child.GetComponent<CanvasGroup>();
+                if (childCanvasGroup == null)
+                    childCanvasGroup = child.gameObject.AddComponent<CanvasGroup>();
+                
+                childCanvasGroup.alpha = 0;
+                child.localScale = Vector3.zero;
+                Vector3 originalPosition = child.anchoredPosition;
+                child.anchoredPosition = new Vector3(originalPosition.x, originalPosition.y - 50f, 0);
+                
+                float delay = 0.6f + (i * 0.1f);
+                
+                Sequence childSequence = DOTween.Sequence();
+                childSequence.Append(child.DOScale(1f, 0.5f).SetEase(Ease.OutElastic, 1.2f, 0.5f).SetDelay(delay));
+                childSequence.Join(childCanvasGroup.DOFade(1f, 0.4f).SetDelay(delay));
+                childSequence.Join(child.DOAnchorPos(originalPosition, 0.5f).SetEase(Ease.OutBack).SetDelay(delay));
+            }
+        }
     }
     
     public void HandleLevelsButton()

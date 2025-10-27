@@ -2546,7 +2546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _winPanel: {fileID: 0}
-  _loosePanel: {fileID: 0}
+  _loosePanel: {fileID: 1747026809}
   _playerController: {fileID: 620436535}
   _crowdManager: {fileID: 222744886}
   _coinsText: {fileID: 450376216}
