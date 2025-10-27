@@ -37,7 +37,7 @@ public class UIController : MonoBehaviour
     [ContextMenu("Loose")]
     public void HandleLoose()
     {
-        if (!isPanel) return;
+        if (isPanel) return;
         isPanel = true;
         
         _playerController.forwardSpeed = 0;

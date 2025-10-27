@@ -14,12 +14,17 @@ public class Ball : MonoBehaviour
     [Header("Effects")]
     public GameObject destroyEffectPrefab;
     
+    [Header("Audio")]
+    public AudioClip[] kickSounds;
+    public float kickSoundVolume = 0.5f;
+    
     private float kickTimer = 0f;
     private Vector3 basePosition;
     private Rigidbody rb;
     private float ballRadius;
     private float baseDistance = 1.5f;
     private Vector3 targetScale;
+    private float previousNormalizedKick = 0f;
     
     void Start()
     {
@@ -91,6 +96,12 @@ public class Ball : MonoBehaviour
         kickTimer += Time.deltaTime * kickSpeed;
         float normalizedKick = (Mathf.Sin(kickTimer) + 1f) / 2f;
         
+        if (previousNormalizedKick < 0.1f && normalizedKick >= 0.1f)
+        {
+            PlayKickSound();
+        }
+        previousNormalizedKick = normalizedKick;
+        
         Vector3 closestPosition = owner.transform.position + owner.transform.forward * (ballRadius * 3f) + new Vector3(horizontalOffset, ballRadius, 0);
         
         Vector3 targetPosition = Vector3.Lerp(closestPosition, basePosition, normalizedKick);
@@ -101,6 +112,15 @@ public class Ball : MonoBehaviour
         
         float rotationSpeed = 200f;
         transform.Rotate(-rotationSpeed * Time.deltaTime, 0, 0);
+    }
+    
+    void PlayKickSound()
+    {
+        if (kickSounds != null && kickSounds.Length > 0 && MusicController.Instance != null)
+        {
+            AudioClip randomKick = kickSounds[Random.Range(0, kickSounds.Length)];
+            MusicController.Instance.PlaySpecificSound(randomKick);
+        }
     }
     
     public IEnumerator FlyAway()

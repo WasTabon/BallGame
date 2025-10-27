@@ -127,6 +127,9 @@ MonoBehaviour:
   totalBallsForOwner: 1
   isBlownAway: 0
   destroyEffectPrefab: {fileID: 1518883088362504, guid: 2a2eb40ae9f1b1b4caf51d97f6c8fb10, type: 3}
+  kickSounds:
+  - {fileID: 8300000, guid: d7afc70f4447f16468331c1c25ec13cb, type: 3}
+  kickSoundVolume: 0.5
 --- !u!54 &7410934480888717408
 Rigidbody:
   m_ObjectHideFlags: 0

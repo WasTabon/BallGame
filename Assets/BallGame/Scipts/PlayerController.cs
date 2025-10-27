@@ -15,6 +15,13 @@ public class PlayerController : MonoBehaviour
     public float smoothSpeed = 10f;
     public float stopSpeed = 15f;
     
+    [Header("Audio Settings")]
+    public AudioClip[] footstepSounds;
+    public float baseFootstepInterval = 0.4f;
+    public int minCrowdSoundsPerStep = 1;
+    public int maxCrowdSoundsPerStep = 5;
+    public float crowdSoundRandomDelay = 0.05f;
+    
     private Animator animator;
     private bool isRunning = false;
     private float targetHorizontalVelocity = 0f;
@@ -22,10 +29,13 @@ public class PlayerController : MonoBehaviour
     private Vector2 lastInputPosition;
     private bool isInputActive = false;
     private float speedMultiplier = 1f;
+    private float footstepTimer = 0f;
+    private CrowdManager crowdManager;
     
     void Start()
     {
         animator = GetComponent<Animator>();
+        crowdManager = FindObjectOfType<CrowdManager>();
         
         GameEntryPoint.OnPlayerStart += StartRunning;
     }
@@ -51,6 +61,7 @@ public class PlayerController : MonoBehaviour
         if (!isRunning) return;
         
         HandleInput();
+        HandleFootsteps();
         
         currentHorizontalVelocity = Mathf.Lerp(currentHorizontalVelocity, targetHorizontalVelocity, Time.deltaTime * smoothSpeed);
         
@@ -73,6 +84,47 @@ public class PlayerController : MonoBehaviour
         
         float clampedX = Mathf.Clamp(transform.position.x, leftBoundary, rightBoundary);
         transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
+    }
+    
+    void HandleFootsteps()
+    {
+        if (footstepSounds == null || footstepSounds.Length == 0) return;
+        
+        float adjustedInterval = baseFootstepInterval / speedMultiplier;
+        footstepTimer += Time.deltaTime;
+        
+        if (footstepTimer >= adjustedInterval)
+        {
+            footstepTimer = 0f;
+            PlayFootstepSounds();
+        }
+    }
+    
+    void PlayFootstepSounds()
+    {
+        int crowdCount = crowdManager != null ? crowdManager.GetTotalBallCount() : 1;
+        int soundsToPlay = Mathf.Clamp(Mathf.CeilToInt(crowdCount / 10f), minCrowdSoundsPerStep, maxCrowdSoundsPerStep);
+        
+        for (int i = 0; i < soundsToPlay; i++)
+        {
+            AudioClip randomFootstep = footstepSounds[Random.Range(0, footstepSounds.Length)];
+            float delay = Random.Range(0f, crowdSoundRandomDelay);
+            
+            if (delay > 0)
+            {
+                StartCoroutine(PlayFootstepWithDelay(randomFootstep, delay));
+            }
+            else
+            {
+                MusicController.Instance.PlaySpecificSound(randomFootstep);
+            }
+        }
+    }
+    
+    IEnumerator PlayFootstepWithDelay(AudioClip clip, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        MusicController.Instance.PlaySpecificSound(clip);
     }
     
     void HandleInput()

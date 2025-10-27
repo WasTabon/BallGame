@@ -2264,8 +2264,19 @@ MonoBehaviour:
   leftBoundary: -2
   rightBoundary: 5
   swipeSensitivity: 1
-  smoothSpeed: 8
-  stopSpeed: 15
+  smoothSpeed: 3
+  stopSpeed: 100
+  footstepSounds:
+  - {fileID: 8300000, guid: 3725bfaa381831b48ac3df654451653b, type: 3}
+  - {fileID: 8300000, guid: 00fd8e763e7823b4e9c6a52bdfbfacf1, type: 3}
+  - {fileID: 8300000, guid: c61dbd386e1da864c9d1b02c73d621bc, type: 3}
+  - {fileID: 8300000, guid: b21dc3117f29551409ff1d3361df173a, type: 3}
+  - {fileID: 8300000, guid: d4053e609a044a845b7c4ae0babddd97, type: 3}
+  - {fileID: 8300000, guid: 084ef9c6c740b1f43a4ffd91e8d60863, type: 3}
+  baseFootstepInterval: 0.3
+  minCrowdSoundsPerStep: 1
+  maxCrowdSoundsPerStep: 5
+  crowdSoundRandomDelay: 0.05
 --- !u!1 &3118098269009355509
 GameObject:
   m_ObjectHideFlags: 0
