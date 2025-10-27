@@ -118,6 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98df7eafbc9a1cd4b9259f469017abd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sound: {fileID: 8300000, guid: 9ce5b3af2ac67c84fa9746edcd65e745, type: 3}
   coinValue: 1
   coinPrefab: {fileID: 1416531982029663159}
   particleCount: 10

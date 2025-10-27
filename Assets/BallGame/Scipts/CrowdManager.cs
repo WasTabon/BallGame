@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class CrowdManager : MonoBehaviour
 {
+    [Header("Audio")]
+    public AudioClip[] playerAddSounds;
+    public AudioClip[] playerRemoveSounds;
+    
     [Header("Crowd Settings")]
     public int maxCrowdSize = 20;
     public float crowdRadius = 3f;
@@ -88,6 +92,8 @@ public class CrowdManager : MonoBehaviour
         
         RedistributeBalls();
         UpdateSpeed();
+        
+        PlayPlayerAddSound();
     }
     
     IEnumerator SpawnMemberAnimation(GameObject member)
@@ -125,6 +131,26 @@ public class CrowdManager : MonoBehaviour
         crowdMembers.RemoveAt(randomIndex);
         Destroy(memberToRemove);
         UpdateSpeed();
+        
+        PlayPlayerRemoveSound();
+    }
+    
+    void PlayPlayerAddSound()
+    {
+        if (playerAddSounds != null && playerAddSounds.Length > 0 && MusicController.Instance != null)
+        {
+            AudioClip randomSound = playerAddSounds[Random.Range(0, playerAddSounds.Length)];
+            MusicController.Instance.PlaySpecificSound(randomSound);
+        }
+    }
+
+    void PlayPlayerRemoveSound()
+    {
+        if (playerRemoveSounds != null && playerRemoveSounds.Length > 0 && MusicController.Instance != null)
+        {
+            AudioClip randomSound = playerRemoveSounds[Random.Range(0, playerRemoveSounds.Length)];
+            MusicController.Instance.PlaySpecificSound(randomSound);
+        }
     }
     
     public void RemoveSpecificCrowdMember(GameObject member)
@@ -136,6 +162,8 @@ public class CrowdManager : MonoBehaviour
             crowdMembers.Remove(member);
             Destroy(member);
             UpdateSpeed();
+            
+            PlayPlayerRemoveSound();
         }
     }
     

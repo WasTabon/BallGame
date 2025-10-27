@@ -965,6 +965,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b9f138f0f424945891a7fe941a381a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAddSounds:
+  - {fileID: 8300000, guid: 59625aac22dcf734ea200d7808b274b9, type: 3}
+  playerRemoveSounds:
+  - {fileID: 8300000, guid: 379cf75e8911d814ba15e3591fcf3314, type: 3}
   maxCrowdSize: 20
   crowdRadius: 2.5
   minDistanceBetweenMembers: 1

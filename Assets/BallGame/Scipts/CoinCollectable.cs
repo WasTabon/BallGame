@@ -1,8 +1,9 @@
-using System.Collections;
 using UnityEngine;
 
 public class CoinCollectable : MonoBehaviour
 {
+    public AudioClip sound;
+    
     [Header("Coin Settings")]
     public int coinValue = 1;
     public GameObject coinPrefab;
@@ -50,6 +51,8 @@ public class CoinCollectable : MonoBehaviour
         }
         
         SpawnParticles();
+        
+        MusicController.Instance.PlaySpecificSound(sound);
         
         gameObject.SetActive(false);
     }
