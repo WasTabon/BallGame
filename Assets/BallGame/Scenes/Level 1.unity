@@ -2545,12 +2545,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b38305c70a34c48b22e8087fe178fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _winPanel: {fileID: 0}
+  _winPanel: {fileID: 950256184}
   _loosePanel: {fileID: 1747026809}
   _playerController: {fileID: 620436535}
   _crowdManager: {fileID: 222744886}
   _coinsText: {fileID: 450376216}
   _ballsText: {fileID: 1958737556}
+  _coinsText1: {fileID: 187853643}
+  _ballsText1: {fileID: 1937032970}
+  _coinsText2: {fileID: 773230467}
+  _ballsText2: {fileID: 1297117934}
 --- !u!1001 &724903599
 PrefabInstance:
   m_ObjectHideFlags: 0

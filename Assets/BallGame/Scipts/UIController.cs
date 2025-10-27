@@ -14,6 +14,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private CrowdManager _crowdManager;
     [SerializeField] private TextMeshProUGUI _coinsText;
     [SerializeField] private TextMeshProUGUI _ballsText;
+    [SerializeField] private TextMeshProUGUI _coinsText1;
+    [SerializeField] private TextMeshProUGUI _ballsText1;
+    [SerializeField] private TextMeshProUGUI _coinsText2;
+    [SerializeField] private TextMeshProUGUI _ballsText2;
 
     private float _oldSpeed;
 
@@ -32,6 +36,10 @@ public class UIController : MonoBehaviour
     public void HandleLoose()
     {
         _playerController.forwardSpeed = 0;
+        _coinsText1.text = $"{WalletController.Instance.Coins}";
+        _ballsText1.text = $"{_crowdManager.GetTotalBallCount()}";
+        _coinsText2.text = $"{WalletController.Instance.Coins}";
+        _ballsText2.text = $"{_crowdManager.GetTotalBallCount()}";
         ShowPanel(_loosePanel);
     }
 
@@ -39,6 +47,10 @@ public class UIController : MonoBehaviour
     public void HandleWin()
     {
         _playerController.forwardSpeed = 0;
+        _coinsText1.text = $"{WalletController.Instance.Coins}";
+        _ballsText1.text = $"{_crowdManager.GetTotalBallCount()}";
+        _coinsText2.text = $"{WalletController.Instance.Coins}";
+        _ballsText2.text = $"{_crowdManager.GetTotalBallCount()}";
         ShowPanel(_winPanel);
     }
 
