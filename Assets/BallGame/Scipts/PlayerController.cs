@@ -34,19 +34,17 @@ public class PlayerController : MonoBehaviour
     
     private Vector3 lastPosition;
     
+    private Rigidbody rb;
+    
     void Start()
     {
         animator = GetComponent<Animator>();
         crowdManager = FindObjectOfType<CrowdManager>();
-        
+        rb = GetComponent<Rigidbody>();
+    
         lastPosition = transform.position;
-    
-#if UNITY_ANDROID || UNITY_IOS
-        //swipeSensitivity = 10f;
-#endif
-    
-        //StartRunning();
     }
+
     
     void StartRunning()
     {
@@ -66,17 +64,15 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
-        //if (!isRunning) return;
-        
         HandleInput();
         HandleFootsteps();
-        
+    
         currentHorizontalVelocity = Mathf.Lerp(currentHorizontalVelocity, targetHorizontalVelocity, Time.deltaTime * smoothSpeed);
-        
+    
         if (!isInputActive)
         {
             targetHorizontalVelocity = Mathf.Lerp(targetHorizontalVelocity, 0f, Time.deltaTime * stopSpeed);
-            
+        
             if (Mathf.Abs(targetHorizontalVelocity) < 0.01f)
             {
                 targetHorizontalVelocity = 0f;
@@ -86,12 +82,12 @@ public class PlayerController : MonoBehaviour
                 currentHorizontalVelocity = 0f;
             }
         }
-        
+    
         Vector3 movement = new Vector3(currentHorizontalVelocity * -sidewaysSpeed, 0, -forwardSpeed * speedMultiplier) * Time.deltaTime;
-        transform.position += movement;
-        
-        float clampedX = Mathf.Clamp(transform.position.x, leftBoundary, rightBoundary);
-        transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
+        Vector3 newPosition = rb.position + movement; // ← ЗАМЕНИЛ transform.position на rb.position
+
+        float clampedX = Mathf.Clamp(newPosition.x, leftBoundary, rightBoundary);
+        rb.MovePosition(new Vector3(clampedX, newPosition.y, newPosition.z)); // ← ЗАМЕНИЛ transform.position на rb.MovePosition
     }
     
     void HandleFootsteps()
@@ -127,22 +123,6 @@ public class PlayerController : MonoBehaviour
                 MusicController.Instance.PlaySpecificSound(randomFootstep);
             }
         }
-    }
-    
-    void OnGUI()
-    {
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 30;
-        style.normal.textColor = Color.yellow;
-    
-        GUI.Label(new Rect(10, 10, 400, 40), $"Running: {isRunning}", style);
-        GUI.Label(new Rect(10, 50, 400, 40), $"SpeedMult: {speedMultiplier}", style);
-        GUI.Label(new Rect(10, 90, 400, 40), $"Pos: {transform.position}", style);
-        GUI.Label(new Rect(10, 130, 400, 40), $"Touches: {Input.touchCount}", style);
-        GUI.Label(new Rect(10, 170, 400, 40), $"TimeScale: {Time.timeScale}", style);
-        GUI.Label(new Rect(10, 210, 400, 40), $"DeltaTime: {Time.deltaTime:F4}", style); // ← ДОБАВЬ
-        GUI.Label(new Rect(10, 250, 400, 40), $"TargetVel: {targetHorizontalVelocity:F3}", style);
-        GUI.Label(new Rect(10, 290, 400, 40), $"CurrentVel: {currentHorizontalVelocity:F3}", style);
     }
     
     IEnumerator PlayFootstepWithDelay(AudioClip clip, float delay)

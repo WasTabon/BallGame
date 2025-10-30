@@ -463,36 +463,46 @@ public class CrowdManager : MonoBehaviour
     void UpdateCrowdPositions()
     {
         if (mainPlayerController == null) return;
-        
+    
         for (int i = 0; i < crowdMembers.Count; i++)
         {
             if (crowdMembers[i] == null) continue;
-            
+        
             float angle = (360f / Mathf.Max(crowdMembers.Count, 1)) * i * Mathf.Deg2Rad;
             float distance = crowdRadius * 0.7f;
-            
+        
             Vector3 targetOffset = new Vector3(
                 Mathf.Cos(angle) * distance,
                 0f,
                 Mathf.Sin(angle) * distance
             );
-            
+        
             Vector3 targetPosition = playerTransform.position + targetOffset;
-            
+        
             float clampedX = Mathf.Clamp(targetPosition.x, leftBoundary, rightBoundary);
-            
+        
             if (targetPosition.x != clampedX)
             {
                 float deltaX = targetPosition.x - clampedX;
                 targetPosition.x = clampedX;
                 targetPosition.z += Mathf.Abs(deltaX) * 0.5f;
             }
-            
-            crowdMembers[i].transform.position = Vector3.Lerp(
-                crowdMembers[i].transform.position,
-                targetPosition,
-                Time.deltaTime * 5f
-            );
+        
+            // ПРОВЕРЯЕМ НАЛИЧИЕ RIGIDBODY
+            Rigidbody rb = crowdMembers[i].GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                Vector3 newPos = Vector3.Lerp(rb.position, targetPosition, Time.deltaTime * 5f);
+                rb.MovePosition(newPos);
+            }
+            else
+            {
+                crowdMembers[i].transform.position = Vector3.Lerp(
+                    crowdMembers[i].transform.position,
+                    targetPosition,
+                    Time.deltaTime * 5f
+                );
+            }
         }
     }
     
