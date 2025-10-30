@@ -32,12 +32,20 @@ public class PlayerController : MonoBehaviour
     private float footstepTimer = 0f;
     private CrowdManager crowdManager;
     
+    private Vector3 lastPosition;
+    
     void Start()
     {
         animator = GetComponent<Animator>();
         crowdManager = FindObjectOfType<CrowdManager>();
         
-        GameEntryPoint.OnPlayerStart += StartRunning;
+        lastPosition = transform.position;
+    
+#if UNITY_ANDROID || UNITY_IOS
+        //swipeSensitivity = 10f;
+#endif
+    
+        //StartRunning();
     }
     
     void StartRunning()
@@ -58,7 +66,7 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
-        if (!isRunning) return;
+        //if (!isRunning) return;
         
         HandleInput();
         HandleFootsteps();
@@ -121,6 +129,22 @@ public class PlayerController : MonoBehaviour
         }
     }
     
+    void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 30;
+        style.normal.textColor = Color.yellow;
+    
+        GUI.Label(new Rect(10, 10, 400, 40), $"Running: {isRunning}", style);
+        GUI.Label(new Rect(10, 50, 400, 40), $"SpeedMult: {speedMultiplier}", style);
+        GUI.Label(new Rect(10, 90, 400, 40), $"Pos: {transform.position}", style);
+        GUI.Label(new Rect(10, 130, 400, 40), $"Touches: {Input.touchCount}", style);
+        GUI.Label(new Rect(10, 170, 400, 40), $"TimeScale: {Time.timeScale}", style);
+        GUI.Label(new Rect(10, 210, 400, 40), $"DeltaTime: {Time.deltaTime:F4}", style); // ← ДОБАВЬ
+        GUI.Label(new Rect(10, 250, 400, 40), $"TargetVel: {targetHorizontalVelocity:F3}", style);
+        GUI.Label(new Rect(10, 290, 400, 40), $"CurrentVel: {currentHorizontalVelocity:F3}", style);
+    }
+    
     IEnumerator PlayFootstepWithDelay(AudioClip clip, float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -129,7 +153,28 @@ public class PlayerController : MonoBehaviour
     
     void HandleInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        // Приоритет тачу на мобильных устройствах
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+        
+            if (touch.phase == TouchPhase.Began)
+            {
+                isInputActive = true;
+                lastInputPosition = touch.position;
+            }
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                isInputActive = false;
+            }
+            else if (touch.phase == TouchPhase.Moved && isInputActive)
+            {
+                targetHorizontalVelocity += touch.deltaPosition.x * swipeSensitivity * 0.1f;
+                targetHorizontalVelocity = Mathf.Clamp(targetHorizontalVelocity, -1f, 1f);
+            }
+        }
+        // Мышь только если нет тачей
+        else if (Input.GetMouseButtonDown(0))
         {
             isInputActive = true;
             lastInputPosition = Input.mousePosition;
@@ -142,31 +187,11 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 currentPosition = Input.mousePosition;
             float deltaX = currentPosition.x - lastInputPosition.x;
-            
+        
             targetHorizontalVelocity += deltaX * swipeSensitivity;
             targetHorizontalVelocity = Mathf.Clamp(targetHorizontalVelocity, -1f, 1f);
-            
-            lastInputPosition = currentPosition;
-        }
         
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            
-            if (touch.phase == TouchPhase.Began)
-            {
-                isInputActive = true;
-                lastInputPosition = touch.position;
-            }
-            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-            {
-                isInputActive = false;
-            }
-            else if (touch.phase == TouchPhase.Moved && isInputActive)
-            {
-                targetHorizontalVelocity += touch.deltaPosition.x * swipeSensitivity;
-                targetHorizontalVelocity = Mathf.Clamp(targetHorizontalVelocity, -1f, 1f);
-            }
+            lastInputPosition = currentPosition;
         }
     }
     

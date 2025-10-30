@@ -147,18 +147,29 @@ public class Ball : MonoBehaviour
     
     void OnDestroy()
     {
-        if (!isBlownAway)
+        // Не создавать эффекты при выгрузке сцены
+        if (!isBlownAway && this != null && gameObject.scene.isLoaded)
         {
             SpawnDestroyEffect();
         }
     }
-    
+
     void SpawnDestroyEffect()
     {
         if (destroyEffectPrefab != null)
         {
             GameObject effect = Instantiate(destroyEffectPrefab, transform.position, Quaternion.identity);
-            Destroy(effect, 2f);
+        
+            // Уменьши время или сразу уничтожай партиклы
+            ParticleSystem ps = effect.GetComponent<ParticleSystem>();
+            if (ps != null)
+            {
+                Destroy(effect, ps.main.duration + ps.main.startLifetime.constantMax);
+            }
+            else
+            {
+                Destroy(effect, 2f);
+            }
         }
     }
 }
