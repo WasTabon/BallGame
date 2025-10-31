@@ -64,6 +64,12 @@ public class CrowdManager : MonoBehaviour
         
         // зробити анімації партікли, рівні і ui
     }
+
+    [ContextMenu("Add Balls")]
+    public void AddBalls()
+    {
+        
+    }
     
     void Update()
     {
