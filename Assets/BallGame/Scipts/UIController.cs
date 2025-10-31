@@ -51,7 +51,15 @@ public class UIController : MonoBehaviour
     [ContextMenu("Win")]
     public void HandleWin()
     {
-        if (!isPanel) return;
+        Debug.Log("Win start");
+        
+        if (isPanel)
+        {
+            Debug.Log("Return");
+            return;
+        }
+        
+        Debug.Log("Win continue");
         isPanel = true;
         
         _playerController.forwardSpeed = 0;

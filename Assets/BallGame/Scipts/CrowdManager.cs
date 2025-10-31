@@ -65,11 +65,24 @@ public class CrowdManager : MonoBehaviour
         // зробити анімації партікли, рівні і ui
     }
 
-    [ContextMenu("Add Balls")]
-    public void AddBalls()
+    [ContextMenu("Spawn 7 Players and 7 Balls")]
+    public void SpawnSevenPlayersAndBalls()
     {
-        
+        // Добавляем 7 игроков
+        for (int i = 0; i < 7; i++)
+        {
+            AddCrowdMember();
+        }
+
+        // Добавляем 7 мячей
+        for (int i = 0; i < 7; i++)
+        {
+            AddBall();
+        }
+
+        Debug.Log("✅ Spawned 7 players and 7 balls via Context Menu");
     }
+
     
     void Update()
     {
